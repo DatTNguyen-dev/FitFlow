@@ -7,18 +7,18 @@ def init_db():
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY, 
-        create_at TEXT NOT NULL
-                   )
+        created_at TEXT NOT NULL
+    )
     """)
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS user_profile (
         user_id TEXT PRIMARY KEY,
         fitness_level TEXT,
-        age INTERGER,
+        age INTEGER,
         height_cm REAL,
         weight_kg REAL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
     """)
     
@@ -29,7 +29,7 @@ def init_db():
         start_date TEXT,
         end_date TEXT,
         created_at TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )
     """)
 
@@ -40,7 +40,7 @@ def init_db():
         name TEXT,
         duration_minutes INTEGER,
         scheduled_date TEXT,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (plan_id) REFERENCES training_plans(id) ON DELETE CASCADE
     )
     """)
 
@@ -49,7 +49,7 @@ def init_db():
         task_id TEXT PRIMARY KEY,
         completed INTEGER,
         completed_at TEXT,
-        FOREIGN KEY (user_id) REFERENCES users(id)
+        FOREIGN KEY (task_id) REFERENCES training_tasks(id) ON DELETE CASCADE
     )
     """)
 
