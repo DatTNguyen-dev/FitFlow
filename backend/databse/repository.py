@@ -61,3 +61,31 @@ def add_training_task(plan_id, name, duration_minutes, scheduled_date):
 
     return task_id
 
+def get_user_plans(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM training_plans WHERE user_id = ?",
+        (user_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(row) for row in rows]
+
+def get_plan_tasks(plan_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM training_tasks WHERE plan_id = ?",
+        (plan_id,)
+    )
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [dict(row) for row in rows]
+
