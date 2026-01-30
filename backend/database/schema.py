@@ -34,7 +34,7 @@ def init_db():
     """)
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXITS training_tasks (
+    CREATE TABLE IF NOT EXISTS training_tasks (
         id TEXT PRIMARY KEY,
         plan_id TEXT NOT NULL,
         name TEXT,
