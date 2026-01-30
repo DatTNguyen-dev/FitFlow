@@ -3,7 +3,7 @@ from datetime import datetime
 from .connection import get_connection
 
 def create_user():
-    conn = get_connection
+    conn = get_connection()
     cursor = conn.cursor()
 
     user_id = str(uuid.uuid4())
