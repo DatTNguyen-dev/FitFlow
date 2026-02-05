@@ -17,6 +17,7 @@ import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, 
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip 
 } from 'recharts';
+import { exercisePlanAPI, workoutScheduleAPI, progressReportAPI } from './api/endpoints';
 
 const { Header, Content, Footer } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -254,11 +255,8 @@ const AnalyticsView = () => (
 function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
-  
-  // State giả lập dữ liệu nhảy số
   const [dataTapLuyen, setDataTapLuyen] = useState({ calories: 1200, percent: 60 });
   
-  // [BACKEND TODO]: Gọi API lấy dữ liệu Realtime ở đây
   useEffect(() => {
     const timer = setInterval(() => {
       setDataTapLuyen(prev => ({
@@ -269,14 +267,31 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleBuildSchedule = (values) => {
-    console.log("Dữ liệu gửi đi:", values); // Backend check log này
+  const handleBuildSchedule = async (values) => {
+    console.log("Dữ liệu gửi đi:", values);
     setIsAIProcessing(true);
-    setTimeout(() => {
-      setIsAIProcessing(false);
+    try {
+      const response = await exercisePlanAPI.generatePlan({
+        sports: values.sports,
+        goal: values.goal,
+        level: values.level,
+      });
+      
+      console.log("Response từ backend:", response.data);
+      
+      // Generate schedule sau khi có plan
+      const scheduleResponse = await workoutScheduleAPI.generateSchedule({
+        preferred_times: values.preferred_times,
+      });
+      
       message.success('Đã tạo xong lịch trình!');
-      setCurrentTab('schedule'); // Chuyển Tab tự động
-    }, 2000);
+      setCurrentTab('schedule');
+    } catch (error) {
+      message.error('Lỗi tạo lịch trình: ' + error.message);
+      console.error(error);
+    } finally {
+      setIsAIProcessing(false);
+    }
   };
 
   const menuItems = [

@@ -1,0 +1,10 @@
+django==6.0.1
+djangorestframework
+django-cors-headers
+langchain==0.1.0
+langchain-google-genai==0.0.10
+google-generativeai==0.3.0
+python-dotenv
+celery==5.3.4
+redis==5.0.1
+python-dateutil

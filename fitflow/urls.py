@@ -1,26 +1,31 @@
 """
 URL configuration for fitflow project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from fitflowapp.views import (
+    UserProfileViewSet, FitnessGoalViewSet, PersonalScheduleViewSet,
+    ExercisePlanViewSet, WorkoutScheduleViewSet, WorkoutSessionViewSet,
+    BodyMetricsViewSet, ProgressReportViewSet
+)
+
+# Create a router and register viewsets
+router = DefaultRouter()
+router.register(r'user-profiles', UserProfileViewSet, basename='userprofile')
+router.register(r'fitness-goals', FitnessGoalViewSet, basename='fitnessgoal')
+router.register(r'personal-schedules', PersonalScheduleViewSet, basename='personalschedule')
+router.register(r'exercise-plans', ExercisePlanViewSet, basename='exerciseplan')
+router.register(r'workout-schedules', WorkoutScheduleViewSet, basename='workoutschedule')
+router.register(r'workout-sessions', WorkoutSessionViewSet, basename='workoutsession')
+router.register(r'body-metrics', BodyMetricsViewSet, basename='bodymetrics')
+router.register(r'progress-reports', ProgressReportViewSet, basename='progressreport')
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('chatbot', views.chatbot, name='chatbot'),
-    path('time_table', views.timetable, name='time_table'),
-    path('todo_list', views.todo_list, name='todo_list'),
+    path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api-auth/', include('rest_framework.urls')),
 ]
